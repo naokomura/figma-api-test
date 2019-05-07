@@ -34,6 +34,9 @@ function exportDom(reqObj) {
 }
 
 
+async function start() {
+  const res = await requestApi()
+  exportDom(res)
+}
 
-const res = await requestApi()
-exportDom(res)
+start();
