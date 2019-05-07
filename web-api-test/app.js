@@ -7,8 +7,6 @@ const request = axios.create({
   }
 })
 
-const issues = []
-const test = document.getElementById('test')
 
 async function requestApi() {
   const reqJson = await request.get('/issues', {
@@ -18,13 +16,12 @@ async function requestApi() {
       per_page: 10
     }
   })
-  const reqData = await reqJson.data
+  const reqData = reqJson.data
   return reqData
 }
 
-async function exportDom() {
-  const reqObj = await requestApi()
-
+function exportDom(reqObj) {
+  const test = document.getElementById('test')
   for (const item of reqObj) {
     const h1 = document.createElement('h1')
     const p = document.createElement('p')
@@ -36,4 +33,7 @@ async function exportDom() {
   console.log(reqObj)
 }
 
-exportDom()
+
+
+const res = await requestApi()
+exportDom(res)
