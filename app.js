@@ -22,11 +22,9 @@ async function fileBasicInfo() {
 
 //GET Color Style Json
 async function getColorStyle(colorKey) {
-  const styleData = await function getColorStyle() {
-    request.get(`/v1/styles/${colorKey.key}`)
-  }
-
-  return styleData
+  const reqJson = await request.get(`/v1/styles/${colorKey}`)
+  const reqData = reqJson.data
+  return reqData
 }
 
 function getColorStyleKey(reqObj) {
@@ -72,12 +70,12 @@ async function start() {
   renderingArea.appendChild(dom)
 
   const colorStyleKey = getColorStyleKey(fullData)
+  console.log(colorStyleKey)
 
   let colorStyleData = {}
-  for (const key of Object.keys(colorStyleKey)) {
-    colorStyleData[key] = await getColorStyle(key)
+  for (const id of Object.keys(colorStyleKey)) {
+    colorStyleData[id] = await getColorStyle(colorStyleKey[id].key)
   }
-
   console.log(colorStyleData)
 
   //test----
