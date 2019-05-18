@@ -1,9 +1,18 @@
-h1 {
-  color: #333;
-  margin-bottom: 0;
+//colors
+$black: #313131;
+$gray: #929292;
 
-  + p {
-    color: #aaa;
-    margin-top: 0;
-  }
+h1 {
+  font-size: 36px;
+  padding-bottom: 8px;
+  border-bottom: solid 1px rgba($black, 0.2);
+  color: $gray;
+}
+
+h2 {
+  font-size: 26px;
+}
+
+img {
+  width: 300px;
 }

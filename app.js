@@ -1,46 +1,64 @@
 import TOKEN from './token'
 import axios from 'axios'
-
-//style
 import './style.scss'
 
-console.log(TOKEN)
+const renderingArea = document.getElementById('js-rendering-area')
+const fileKey = 'gzKK9ljJaDb9yRfJ2miGlQeh'
 
 const request = axios.create({
-  baseURL: 'https://api.github.com',
+  baseURL: 'https://api.figma.com',
   headers: {
-    Authorization: `token ${TOKEN}`
+    'X-Figma-Token': `${TOKEN}`
   }
 })
 
-async function requestApi() {
-  const reqJson = await request.get('/issues', {
+//GET Figma Basic Informations
+async function fileBasicInfo() {
+  const reqJson = await request.get(`/v1/files/${fileKey}`)
+  const reqData = reqJson.data
+  return reqData
+}
+
+//GET Figma Test Json
+async function dataCheck() {
+  const reqJson = await request.get(`/v1/files/${fileKey}/nodes`, {
     params: {
-      state: 'all',
-      since: new Date('2018-01-01'),
-      per_page: 10
+      ids: '28:3'
     }
   })
   const reqData = reqJson.data
   return reqData
 }
 
-function exportDom(reqObj) {
-  const test = document.getElementById('test')
-  for (const item of reqObj) {
-    const h1 = document.createElement('h1')
-    const p = document.createElement('p')
-    h1.appendChild(document.createTextNode(item.title))
-    p.appendChild(document.createTextNode(item.body))
-    test.appendChild(h1)
-    test.appendChild(p)
-  }
+function generateDom(reqObj) {
   console.log(reqObj)
+
+  const fileTitle = document.createElement('h2')
+  fileTitle.appendChild(document.createTextNode(`File Name: ${reqObj.name}`))
+  const thumbnail = document.createElement('img')
+  thumbnail.src = reqObj.thumbnailUrl
+
+  const generateObj = {
+    fileTitle: fileTitle,
+    thumbnail: thumbnail
+  }
+
+  let generateDoms = document.createDocumentFragment()
+  for (const item of Object.keys(generateObj)) {
+    generateDoms.appendChild(generateObj[item])
+  }
+  return generateDoms
 }
 
 async function start() {
-  const res = await requestApi()
-  exportDom(res)
+  const res = await fileBasicInfo()
+  const dom = generateDom(res)
+  renderingArea.appendChild(dom)
+
+  //test----
+  const testData = await dataCheck()
+  console.log(testData)
+  //----test
 }
 
 start()
