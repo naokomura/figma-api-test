@@ -1,6 +1,9 @@
 import TOKEN from './token'
 import axios from 'axios'
 
+//style
+import './style.scss'
+
 console.log(TOKEN)
 
 const request = axios.create({

@@ -1,3 +1,9 @@
-.test {
-  color: red;
+h1 {
+  color: #333;
+  margin-bottom: 0;
+
+  + p {
+    color: #aaa;
+    margin-top: 0;
+  }
 }
