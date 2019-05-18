@@ -1,6 +1,7 @@
 import TOKEN from './token'
 import axios from 'axios'
 import './style.scss'
+import { async } from 'q'
 
 const renderingArea = document.getElementById('js-rendering-area')
 const fileKey = 'gzKK9ljJaDb9yRfJ2miGlQeh'
@@ -12,22 +13,37 @@ const request = axios.create({
   }
 })
 
-//GET Figma Basic Informations
+//GET Full json
 async function fileBasicInfo() {
   const reqJson = await request.get(`/v1/files/${fileKey}`)
   const reqData = reqJson.data
   return reqData
 }
 
-//GET Figma Test Json
-async function dataCheck() {
-  const reqJson = await request.get(`/v1/files/${fileKey}/nodes`, {
-    params: {
-      ids: '28:3'
+//GET Color Style Json
+async function getColorStyle(colorKey) {
+  const styleData = await function getColorStyle() {
+    request.get(`/v1/styles/${colorKey.key}`)
+  }
+
+  return styleData
+}
+
+function getColorStyleKey(reqObj) {
+  const styleData = reqObj.styles
+
+  //Created Color(styleType === FILL) Key Object
+  let colorKey = {}
+  for (const id of Object.keys(styleData)) {
+    if (styleData[id].styleType === 'FILL') {
+      colorKey[id] = {
+        key: styleData[id].key,
+        name: styleData[id].name
+      }
     }
-  })
-  const reqData = reqJson.data
-  return reqData
+  }
+
+  return colorKey
 }
 
 function generateDom(reqObj) {
@@ -50,13 +66,23 @@ function generateDom(reqObj) {
 }
 
 async function start() {
-  const res = await fileBasicInfo()
-  const dom = generateDom(res)
+  const fullData = await fileBasicInfo()
+
+  const dom = generateDom(fullData)
   renderingArea.appendChild(dom)
 
+  const colorStyleKey = getColorStyleKey(fullData)
+
+  let colorStyleData = {}
+  for (const key of Object.keys(colorStyleKey)) {
+    colorStyleData[key] = await getColorStyle(key)
+  }
+
+  console.log(colorStyleData)
+
   //test----
-  const testData = await dataCheck()
-  console.log(testData)
+  // const testData = await fileStyles()
+  // console.log(testData)
   //----test
 }
 
