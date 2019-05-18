@@ -1,7 +1,6 @@
 import TOKEN from './token'
 import axios from 'axios'
 import './style.scss'
-import { async } from 'q'
 
 const renderingArea = document.getElementById('js-rendering-area')
 const fileKey = 'gzKK9ljJaDb9yRfJ2miGlQeh'
@@ -20,28 +19,67 @@ async function fileBasicInfo() {
   return reqData
 }
 
-//GET Color Style Json
-async function getColorStyle(colorKey) {
-  const reqJson = await request.get(`/v1/styles/${colorKey}`)
+//GET Style Node
+async function getStyleNode(colorId) {
+  const reqJson = await request.get(`/v1/files/${fileKey}/nodes`, {
+    params: {
+      ids: colorId
+    }
+  })
   const reqData = reqJson.data
-  return reqData
+  const styleData = reqData.nodes[colorId].document
+  return styleData
 }
 
-function getColorStyleKey(reqObj) {
+function getStyleAccessKeys(reqObj) {
   const styleData = reqObj.styles
 
-  //Created Color(styleType === FILL) Key Object
+  //Created Color Style Access Key Object
   let colorKey = {}
+  let i = 0
   for (const id of Object.keys(styleData)) {
     if (styleData[id].styleType === 'FILL') {
-      colorKey[id] = {
-        key: styleData[id].key,
-        name: styleData[id].name
+      colorKey[i] = {
+        id: id,
+        key: styleData[id].key
       }
+      i++
     }
   }
 
-  return colorKey
+  //Created Effect Style Access Key Object
+  let effectKey = {}
+  i = 0
+  for (const id of Object.keys(styleData)) {
+    if (styleData[id].styleType === 'EFFECT') {
+      effectKey[i] = {
+        id: id,
+        key: styleData[id].key
+      }
+      i++
+    }
+  }
+
+  //Created Text Style Access Key Object
+  let textKey = {}
+  i = 0
+  for (const id of Object.keys(styleData)) {
+    if (styleData[id].styleType === 'TEXT') {
+      textKey[i] = {
+        id: id,
+        key: styleData[id].key
+      }
+      i++
+    }
+  }
+
+  const styleAccessKeys = {
+    color: colorKey,
+    effect: effectKey,
+    text: textKey
+  }
+
+  return styleAccessKeys
 }
 
 function generateDom(reqObj) {
@@ -69,14 +107,28 @@ async function start() {
   const dom = generateDom(fullData)
   renderingArea.appendChild(dom)
 
-  const colorStyleKey = getColorStyleKey(fullData)
-  console.log(colorStyleKey)
+  //Keys accessible all styleType Object
+  const styleAccessKeys = getStyleAccessKeys(fullData)
+  console.log(styleAccessKeys)
 
   let colorStyleData = {}
-  for (const id of Object.keys(colorStyleKey)) {
-    colorStyleData[id] = await getColorStyle(colorStyleKey[id].key)
+  for (const id of Object.keys(styleAccessKeys.color)) {
+    colorStyleData[id] = await getStyleNode(styleAccessKeys.color[id].id)
   }
+
+  let effectStyleData = {}
+  for (const id of Object.keys(styleAccessKeys.effect)) {
+    effectStyleData[id] = await getStyleNode(styleAccessKeys.effect[id].id)
+  }
+
+  let textStyleData = {}
+  for (const id of Object.keys(styleAccessKeys.text)) {
+    textStyleData[id] = await getStyleNode(styleAccessKeys.text[id].id)
+  }
+
   console.log(colorStyleData)
+  console.log(effectStyleData)
+  console.log(textStyleData)
 
   //test----
   // const testData = await fileStyles()
