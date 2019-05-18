@@ -7,7 +7,6 @@ const request = axios.create({
   }
 })
 
-
 async function requestApi() {
   const reqJson = await request.get('/issues', {
     params: {
@@ -33,10 +32,9 @@ function exportDom(reqObj) {
   console.log(reqObj)
 }
 
-
 async function start() {
   const res = await requestApi()
   exportDom(res)
 }
 
-start();
+start()
