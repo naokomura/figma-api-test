@@ -38,14 +38,13 @@ function generateDom(reqObj) {
   const thumbnail = document.createElement('img')
   thumbnail.src = reqObj.thumbnailUrl
 
-  const generateObj = {
-    fileTitle: fileTitle,
-    thumbnail: thumbnail
-  }
+  const map = new Map()
+  map.set('fileTitle', fileTitle)
+  map.set('thumbnail', thumbnail)
 
   let generateDoms = document.createDocumentFragment()
-  for (const item of Object.keys(generateObj)) {
-    generateDoms.appendChild(generateObj[item])
+  for (const item of map.values()) {
+    generateDoms.appendChild(item)
   }
   return generateDoms
 }
