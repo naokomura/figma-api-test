@@ -2,6 +2,12 @@
 $black: #313131;
 $gray: #929292;
 $white: #ffffff;
+$boundary: rgba($black, 0.1);
+
+body {
+  font-family: 'Noto Sans CJK JP';
+  letter-spacing: 0.03em;
+}
 
 h1 {
   font-size: 32px;
@@ -11,7 +17,12 @@ h1 {
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 22px;
+  line-height: 1.6;
+}
+
+p {
+  font-size: 14px;
 }
 
 img {
@@ -34,4 +45,45 @@ img {
   grid-auto-rows: minmax(160px, auto);
   grid-row-gap: 32px;
   grid-column-gap: 32px;
+
+  .box {
+    border: solid 1px $boundary;
+    border-radius: 6px;
+    padding: 0 16px 16px 16px;
+    box-shadow: 0 8px 40px -16px rgba(0, 0, 0, 0.25),
+      0 2px 14px -8px rgba(0, 0, 0, 0.1);
+
+    .color-sample {
+      width: calc(100% + 32px);
+      margin-left: -16px;
+      border-radius: 6px 6px 0 0;
+      border-bottom: solid 1px $boundary;
+      position: relative;
+
+      &::before {
+        content: '';
+        padding-top: calc(100% / 5 * 2);
+        display: block;
+      }
+    }
+
+    h2 {
+      margin-top: 12px;
+      margin-bottom: 0;
+    }
+
+    p {
+      margin: 0;
+
+      &:nth-last-of-type(1) {
+        line-height: 1.6;
+        font-family: 'Roboto Mono';
+        color: #ec5734;
+
+        > span {
+          color: #2fd2cf;
+        }
+      }
+    }
+  }
 }

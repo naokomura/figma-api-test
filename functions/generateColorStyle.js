@@ -8,6 +8,9 @@ function generateColorStyle(colorData) {
     let hex
     let colorCode
     let hexColorCode
+    let sassVariable
+
+    const colorName = colorData[item].name
 
     if (colorData[item].fills[0].color) {
       let colorRgb = colorData[item].fills[0].color
@@ -64,30 +67,46 @@ function generateColorStyle(colorData) {
     }
 
     const wrapBoxNode = document.createElement('div')
+    const colorSampleNode = document.createElement('div')
     const colorNameNode = document.createElement('h2')
     const rgbaCodeNode = document.createElement('p')
-    const hexCodeNode = document.createElement('p')
+    const sassVariableNode = document.createElement('p')
+    const sassVariableCodeNode = document.createElement('span')
 
     wrapBoxNode.classList.add('box')
 
-    colorNameNode.appendChild(document.createTextNode(colorData[item].name))
+    //Setting Color Sample Box
+    colorSampleNode.classList.add('color-sample')
+    if (!hexColorCode) {
+      colorSampleNode.style.background = colorCode
+      wrapBoxNode.appendChild(colorSampleNode)
+    } else {
+      colorSampleNode.style.background = hexColorCode
+      wrapBoxNode.appendChild(colorSampleNode)
+    }
+
+    //Setting Color Style Name
+    colorNameNode.appendChild(document.createTextNode(colorName))
     wrapBoxNode.appendChild(colorNameNode)
+
+    //Setting RGBA Color Code
     rgbaCodeNode.appendChild(document.createTextNode(colorCode))
     wrapBoxNode.appendChild(rgbaCodeNode)
 
-    if (hexColorCode) {
-      hexCodeNode.appendChild(document.createTextNode(hexColorCode))
-      wrapBoxNode.appendChild(hexCodeNode)
+    //Setting Sass Color Variable
+    sassVariableNode.appendChild(document.createTextNode(`$${colorName}: `))
+    if (!hexColorCode) {
+      sassVariableCodeNode.appendChild(document.createTextNode(`${colorCode};`))
+    } else {
+      sassVariableCodeNode.appendChild(
+        document.createTextNode(`${hexColorCode};`)
+      )
     }
+    sassVariableNode.appendChild(sassVariableCodeNode)
+    wrapBoxNode.appendChild(sassVariableNode)
 
     const box = 'box' + item
-    // const name = 'name' + item
-    // const rgbCode = 'code' + item
-    // const hexCode = 'hex' + item
     map.set(box, wrapBoxNode)
-    // map.set(name, colorNameNode)
-    // map.set(rgbCode, rgbaCodeNode)
-    // map.set(hexCode, hexCodeNode)
   }
 
   const containerNode = document.createElement('div')
