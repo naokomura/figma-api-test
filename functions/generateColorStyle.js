@@ -4,11 +4,10 @@ function generateColorStyle(colorData) {
   const map = new Map()
 
   for (const item of Object.keys(colorData)) {
-    let colorNameNode = document.createElement('h2')
-    let colorCodeNode = document.createElement('p')
-
     let rgba = []
+    let hex
     let colorCode
+    let hexColorCode
 
     if (colorData[item].fills[0].color) {
       let colorRgb = colorData[item].fills[0].color
@@ -29,6 +28,10 @@ function generateColorStyle(colorData) {
       }
 
       colorCode = `rgba(${rgba.join()})`
+
+      //rgbHex Returned #01234567
+      hex = rgbHex(colorCode)
+      hexColorCode = `#${hex.substr(0, 6)}`
     } else {
       let gradientCode = []
       let gradientData = colorData[item].fills[0].gradientStops
@@ -60,19 +63,42 @@ function generateColorStyle(colorData) {
       colorCode = `linear-gradient(90deg,${gradientCode.join()})`
     }
 
-    colorNameNode.appendChild(document.createTextNode(colorData[item].name))
-    colorCodeNode.appendChild(document.createTextNode(colorCode))
+    const wrapBoxNode = document.createElement('div')
+    const colorNameNode = document.createElement('h2')
+    const rgbaCodeNode = document.createElement('p')
+    const hexCodeNode = document.createElement('p')
 
-    let name = 'name' + item
-    let code = 'code' + item
-    map.set(name, colorNameNode)
-    map.set(code, colorCodeNode)
+    wrapBoxNode.classList.add('box')
+
+    colorNameNode.appendChild(document.createTextNode(colorData[item].name))
+    wrapBoxNode.appendChild(colorNameNode)
+    rgbaCodeNode.appendChild(document.createTextNode(colorCode))
+    wrapBoxNode.appendChild(rgbaCodeNode)
+
+    if (hexColorCode) {
+      hexCodeNode.appendChild(document.createTextNode(hexColorCode))
+      wrapBoxNode.appendChild(hexCodeNode)
+    }
+
+    const box = 'box' + item
+    // const name = 'name' + item
+    // const rgbCode = 'code' + item
+    // const hexCode = 'hex' + item
+    map.set(box, wrapBoxNode)
+    // map.set(name, colorNameNode)
+    // map.set(rgbCode, rgbaCodeNode)
+    // map.set(hexCode, hexCodeNode)
+  }
+
+  const containerNode = document.createElement('div')
+  containerNode.classList.add('container')
+
+  for (const item of map.values()) {
+    containerNode.appendChild(item)
   }
 
   let generateDoms = document.createDocumentFragment()
-  for (const item of map.values()) {
-    generateDoms.appendChild(item)
-  }
+  generateDoms.appendChild(containerNode)
 
   return generateDoms
 }
