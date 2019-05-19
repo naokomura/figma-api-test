@@ -2,7 +2,8 @@ import TOKEN from './token'
 import axios from 'axios'
 import './style.scss'
 
-const renderingArea = document.getElementById('js-rendering-area')
+const basicInfoArea = document.getElementById('js-basic-infos')
+const colorStyleArea = document.getElementById('js-color-styles')
 const fileKey = 'gzKK9ljJaDb9yRfJ2miGlQeh'
 
 const request = axios.create({
@@ -16,7 +17,7 @@ const request = axios.create({
 GET DATAS FROM FIGMA API
 ----------------------------------- */
 //GET Full json
-async function fileBasicInfo() {
+async function getFullJson() {
   const reqJson = await request.get(`/v1/files/${fileKey}`)
   const reqData = reqJson.data
   return reqData
@@ -89,7 +90,7 @@ function getStyleAccessKeys(reqObj) {
 /* -----------------------------------
 GENERATE GETTING DATAS TO DOM
 ----------------------------------- */
-function generateDom(reqObj) {
+function generateBasicInfo(reqObj) {
   console.log(reqObj)
 
   const fileTitle = document.createElement('h2')
@@ -105,17 +106,70 @@ function generateDom(reqObj) {
   for (const item of map.values()) {
     generateDoms.appendChild(item)
   }
+
+  return generateDoms
+}
+
+function generateColorStyle(colorData) {
+  const map = new Map()
+
+  for (const item of Object.keys(colorData)) {
+    let colorNameNode = document.createElement('h2')
+    let colorCodeNode = document.createElement('p')
+
+    let rgba = []
+    let colorCode
+
+    if (colorData[item].fills[0].color) {
+      let colorRgba = colorData[item].fills[0].color
+
+      let colorAlpha
+      if (colorData[item].fills[0].opacity) {
+        colorAlpha = colorData[item].fills[0].opacity
+      } else {
+        colorAlpha = 1
+      }
+
+      for (const key of Object.keys(colorRgba)) {
+        if (key === 'a') {
+          let alpha = Math.round(colorAlpha * 100) / 100
+          rgba.push(alpha)
+        } else {
+          let color = Math.round(colorRgba[key] * 255)
+          rgba.push(color)
+        }
+      }
+
+      colorCode = `rgba(${rgba.join()})`
+    } else {
+      console.log('gradient Color Style')
+      colorCode = `linear-gradient(${rgba.join()})`
+    }
+
+    colorNameNode.appendChild(document.createTextNode(colorData[item].name))
+    colorCodeNode.appendChild(document.createTextNode(colorCode))
+
+    let name = 'name' + item
+    let code = 'code' + item
+    map.set(name, colorNameNode)
+    map.set(code, colorCodeNode)
+  }
+
+  let generateDoms = document.createDocumentFragment()
+  for (const item of map.values()) {
+    generateDoms.appendChild(item)
+  }
+
   return generateDoms
 }
 
 /* -----------------------------------
-STYLE DATA GET & EXPORT FUNCTION
+START ALL FUNCTION
 ----------------------------------- */
 async function start() {
-  const fullData = await fileBasicInfo()
-
-  const dom = generateDom(fullData)
-  renderingArea.appendChild(dom)
+  const fullData = await getFullJson()
+  const basicInfoNodes = generateBasicInfo(fullData)
+  basicInfoArea.appendChild(basicInfoNodes)
 
   const styleAccessKeys = getStyleAccessKeys(fullData)
   console.log(styleAccessKeys)
@@ -139,6 +193,9 @@ async function start() {
   console.log(colorStyleData)
   console.log(effectStyleData)
   console.log(textStyleData)
+
+  const colorStyleNodes = generateColorStyle(colorStyleData)
+  colorStyleArea.appendChild(colorStyleNodes)
 
   //test----
   // const testData = await fileStyles()
