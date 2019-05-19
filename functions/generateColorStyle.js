@@ -1,3 +1,5 @@
+import rgbHex from 'rgb-hex'
+
 function generateColorStyle(colorData) {
   const map = new Map()
 
