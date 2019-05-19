@@ -12,6 +12,9 @@ const request = axios.create({
   }
 })
 
+/* -----------------------------------
+GET DATAS FROM FIGMA API
+----------------------------------- */
 //GET Full json
 async function fileBasicInfo() {
   const reqJson = await request.get(`/v1/files/${fileKey}`)
@@ -20,21 +23,24 @@ async function fileBasicInfo() {
 }
 
 //GET Style Node
-async function getStyleNode(colorId) {
+async function getStyleNode(styleId) {
   const reqJson = await request.get(`/v1/files/${fileKey}/nodes`, {
     params: {
-      ids: colorId
+      ids: styleId
     }
   })
   const reqData = reqJson.data
-  const styleData = reqData.nodes[colorId].document
+  const styleData = reqData.nodes[styleId].document
   return styleData
 }
 
+/* -----------------------------------
+DATA EDITING & PREPARATION
+----------------------------------- */
+//Keys accessible all styleType Object
 function getStyleAccessKeys(reqObj) {
   const styleData = reqObj.styles
 
-  //Created Color Style Access Key Object
   let colorKey = {}
   let i = 0
   for (const id of Object.keys(styleData)) {
@@ -47,7 +53,6 @@ function getStyleAccessKeys(reqObj) {
     }
   }
 
-  //Created Effect Style Access Key Object
   let effectKey = {}
   i = 0
   for (const id of Object.keys(styleData)) {
@@ -60,7 +65,6 @@ function getStyleAccessKeys(reqObj) {
     }
   }
 
-  //Created Text Style Access Key Object
   let textKey = {}
   i = 0
   for (const id of Object.keys(styleData)) {
@@ -82,6 +86,9 @@ function getStyleAccessKeys(reqObj) {
   return styleAccessKeys
 }
 
+/* -----------------------------------
+GENERATE GETTING DATAS TO DOM
+----------------------------------- */
 function generateDom(reqObj) {
   console.log(reqObj)
 
@@ -101,16 +108,19 @@ function generateDom(reqObj) {
   return generateDoms
 }
 
+/* -----------------------------------
+STYLE DATA GET & EXPORT FUNCTION
+----------------------------------- */
 async function start() {
   const fullData = await fileBasicInfo()
 
   const dom = generateDom(fullData)
   renderingArea.appendChild(dom)
 
-  //Keys accessible all styleType Object
   const styleAccessKeys = getStyleAccessKeys(fullData)
   console.log(styleAccessKeys)
 
+  //Style Datas
   let colorStyleData = {}
   for (const id of Object.keys(styleAccessKeys.color)) {
     colorStyleData[id] = await getStyleNode(styleAccessKeys.color[id].id)
