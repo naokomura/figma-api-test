@@ -90,6 +90,8 @@ function getStyleAccessKeys(reqObj) {
 /* -----------------------------------
 GENERATE GETTING DATAS TO DOM
 ----------------------------------- */
+import generateColorStyle from './functions/generateColorStyle'
+
 function generateBasicInfo(reqObj) {
   console.log(reqObj)
 
@@ -101,59 +103,6 @@ function generateBasicInfo(reqObj) {
   const map = new Map()
   map.set('fileTitle', fileTitle)
   map.set('thumbnail', thumbnail)
-
-  let generateDoms = document.createDocumentFragment()
-  for (const item of map.values()) {
-    generateDoms.appendChild(item)
-  }
-
-  return generateDoms
-}
-
-function generateColorStyle(colorData) {
-  const map = new Map()
-
-  for (const item of Object.keys(colorData)) {
-    let colorNameNode = document.createElement('h2')
-    let colorCodeNode = document.createElement('p')
-
-    let rgba = []
-    let colorCode
-
-    if (colorData[item].fills[0].color) {
-      let colorRgba = colorData[item].fills[0].color
-
-      let colorAlpha
-      if (colorData[item].fills[0].opacity) {
-        colorAlpha = colorData[item].fills[0].opacity
-      } else {
-        colorAlpha = 1
-      }
-
-      for (const key of Object.keys(colorRgba)) {
-        if (key === 'a') {
-          let alpha = Math.round(colorAlpha * 100) / 100
-          rgba.push(alpha)
-        } else {
-          let color = Math.round(colorRgba[key] * 255)
-          rgba.push(color)
-        }
-      }
-
-      colorCode = `rgba(${rgba.join()})`
-    } else {
-      console.log('gradient Color Style')
-      colorCode = `linear-gradient(${rgba.join()})`
-    }
-
-    colorNameNode.appendChild(document.createTextNode(colorData[item].name))
-    colorCodeNode.appendChild(document.createTextNode(colorCode))
-
-    let name = 'name' + item
-    let code = 'code' + item
-    map.set(name, colorNameNode)
-    map.set(code, colorCodeNode)
-  }
 
   let generateDoms = document.createDocumentFragment()
   for (const item of map.values()) {
