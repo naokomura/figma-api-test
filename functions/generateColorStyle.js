@@ -30,8 +30,6 @@ function generateColorStyle(colorData) {
 
       colorCode = `rgba(${rgba.join()})`
     } else {
-      console.log('gradient Color Style')
-
       let gradientCode = []
       let gradientData = colorData[item].fills[0].gradientStops
 
