@@ -4,7 +4,11 @@ import './style.scss'
 
 const basicInfoArea = document.getElementById('js-basic-infos')
 const colorStyleArea = document.getElementById('js-color-styles')
-const fileKey = 'gzKK9ljJaDb9yRfJ2miGlQeh'
+
+//helle Design System
+// const fileKey = 'gzKK9ljJaDb9yRfJ2miGlQeh'
+//MEME Design System
+const fileKey = 'Yvk9kgOXwpFWZ71jXQLcZooH'
 
 const request = axios.create({
   baseURL: 'https://api.figma.com',

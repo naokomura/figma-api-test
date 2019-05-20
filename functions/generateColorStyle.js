@@ -1,4 +1,5 @@
 import rgbHex from 'rgb-hex'
+import getStyleImage from './getStyleImage'
 
 function generateColorStyle(colorData) {
   const map = new Map()
@@ -8,11 +9,19 @@ function generateColorStyle(colorData) {
     let hex
     let colorCode
     let hexColorCode
-    let sassVariable
+    let imageRef
 
     const colorName = colorData[item].name
 
-    if (colorData[item].fills[0].color) {
+    //Image Color Style
+    if (colorData[item].fills[0].imageRef) {
+      imageRef = colorData[item].fills[0].imageRef
+      const id = colorData[item].id
+
+      console.log(getStyleImage(id))
+    }
+    //Normal Color Style
+    else if (colorData[item].fills[0].color) {
       let colorRgb = colorData[item].fills[0].color
       let colorAlpha = colorData[item].fills[0].opacity
 
@@ -35,7 +44,9 @@ function generateColorStyle(colorData) {
       //rgbHex Returned #01234567
       hex = rgbHex(colorCode)
       hexColorCode = `#${hex.substr(0, 6)}`
-    } else {
+    }
+    //Gradient Color Style
+    else {
       let gradientCode = []
       let gradientData = colorData[item].fills[0].gradientStops
 
