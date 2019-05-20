@@ -1,43 +1,9 @@
-import TOKEN from './token'
-import axios from 'axios'
 import './style.scss'
-
-const basicInfoArea = document.getElementById('js-basic-infos')
-const colorStyleArea = document.getElementById('js-color-styles')
-
-//helle Design System
-// const fileKey = 'gzKK9ljJaDb9yRfJ2miGlQeh'
-//MEME Design System
-const fileKey = 'Yvk9kgOXwpFWZ71jXQLcZooH'
-
-const request = axios.create({
-  baseURL: 'https://api.figma.com',
-  headers: {
-    'X-Figma-Token': `${TOKEN}`
-  }
-})
 
 /* -----------------------------------
 GET DATAS FROM FIGMA API
 ----------------------------------- */
-//GET Full json
-async function getFullJson() {
-  const reqJson = await request.get(`/v1/files/${fileKey}`)
-  const reqData = reqJson.data
-  return reqData
-}
-
-//GET Style Node
-async function getStyleNode(styleId) {
-  const reqJson = await request.get(`/v1/files/${fileKey}/nodes`, {
-    params: {
-      ids: styleId
-    }
-  })
-  const reqData = reqJson.data
-  const styleData = reqData.nodes[styleId].document
-  return styleData
-}
+import { getFullJson, getStyleNode } from './functions/getApiObjects'
 
 /* -----------------------------------
 DATA EDITING & PREPARATION
@@ -94,7 +60,10 @@ function getStyleAccessKeys(reqObj) {
 /* -----------------------------------
 GENERATE GETTING DATAS TO DOM
 ----------------------------------- */
-import generateColorStyle from './functions/generateColorStyle'
+const basicInfoArea = document.getElementById('js-basic-infos')
+const colorStyleArea = document.getElementById('js-color-styles')
+
+import generateColorStyle from './functions/generateColorStyles'
 
 function generateBasicInfo(reqObj) {
   console.log(reqObj)
@@ -120,6 +89,7 @@ function generateBasicInfo(reqObj) {
 START ALL FUNCTION
 ----------------------------------- */
 async function start() {
+  //GET Full json
   const fullData = await getFullJson()
   const basicInfoNodes = generateBasicInfo(fullData)
   basicInfoArea.appendChild(basicInfoNodes)
@@ -127,7 +97,7 @@ async function start() {
   const styleAccessKeys = getStyleAccessKeys(fullData)
   console.log(styleAccessKeys)
 
-  //Style Datas
+  //GET Styles Node
   let colorStyleData = {}
   for (const id of Object.keys(styleAccessKeys.color)) {
     colorStyleData[id] = await getStyleNode(styleAccessKeys.color[id].id)
@@ -147,7 +117,7 @@ async function start() {
   console.log(effectStyleData)
   console.log(textStyleData)
 
-  const colorStyleNodes = generateColorStyle(colorStyleData)
+  const colorStyleNodes = await generateColorStyle(colorStyleData)
   colorStyleArea.appendChild(colorStyleNodes)
 
   //test----

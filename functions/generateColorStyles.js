@@ -1,7 +1,7 @@
 import rgbHex from 'rgb-hex'
-import getStyleImage from './getStyleImage'
+import { getStyleImage } from './getApiObjects'
 
-function generateColorStyle(colorData) {
+async function generateColorStyle(colorData) {
   const map = new Map()
 
   for (const item of Object.keys(colorData)) {
@@ -9,16 +9,16 @@ function generateColorStyle(colorData) {
     let hex
     let colorCode
     let hexColorCode
-    let imageRef
+    let imageCode
 
     const colorName = colorData[item].name
 
     //Image Color Style
     if (colorData[item].fills[0].imageRef) {
-      imageRef = colorData[item].fills[0].imageRef
       const id = colorData[item].id
 
-      console.log(getStyleImage(id))
+      let image = await getStyleImage(id)
+      imageCode = `url("${image}")`
     }
     //Normal Color Style
     else if (colorData[item].fills[0].color) {
@@ -88,11 +88,15 @@ function generateColorStyle(colorData) {
 
     //Setting Color Sample Box
     colorSampleNode.classList.add('color-sample')
-    if (!hexColorCode) {
-      colorSampleNode.style.background = colorCode
+    if (imageCode) {
+      colorSampleNode.style.background = 'center center /cover no-repeat'
+      colorSampleNode.style.backgroundImage = imageCode
+      wrapBoxNode.appendChild(colorSampleNode)
+    } else if (hexColorCode) {
+      colorSampleNode.style.background = hexColorCode
       wrapBoxNode.appendChild(colorSampleNode)
     } else {
-      colorSampleNode.style.background = hexColorCode
+      colorSampleNode.style.background = colorCode
       wrapBoxNode.appendChild(colorSampleNode)
     }
 
@@ -106,12 +110,15 @@ function generateColorStyle(colorData) {
 
     //Setting Sass Color Variable
     sassVariableNode.appendChild(document.createTextNode(`$${colorName}: `))
-    if (!hexColorCode) {
-      sassVariableCodeNode.appendChild(document.createTextNode(`${colorCode};`))
-    } else {
+
+    if (imageCode) {
+      sassVariableCodeNode.appendChild(document.createTextNode(`${imageCode};`))
+    } else if (hexColorCode) {
       sassVariableCodeNode.appendChild(
         document.createTextNode(`${hexColorCode};`)
       )
+    } else {
+      sassVariableCodeNode.appendChild(document.createTextNode(`${colorCode};`))
     }
     sassVariableNode.appendChild(sassVariableCodeNode)
     wrapBoxNode.appendChild(sassVariableNode)
