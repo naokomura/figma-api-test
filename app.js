@@ -119,11 +119,22 @@ async function start() {
 
   const colorStyleNodes = await generateColorStyle(colorStyleData)
   colorStyleArea.appendChild(colorStyleNodes)
-
-  //test----
-  // const testData = await fileStyles()
-  // console.log(testData)
-  //----test
 }
+
+import getFileKey from './fileKey'
+const setFileKeyButton = document.getElementById('js-set-file-key')
+const fileKeyInput = document.forms.get_file_key_form.file_key
+
+fileKeyInput.addEventListener('input', () => {
+  if (fileKeyInput.validity.valid) {
+    setFileKeyButton.disabled = false
+  } else {
+    setFileKeyButton.disabled = true
+  }
+})
+setFileKeyButton.addEventListener('click', () => {
+  const FILE_KEY = getFileKey(fileKeyInput)
+  console.log(FILE_KEY)
+})
 
 start()
