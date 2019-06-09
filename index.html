@@ -7,8 +7,21 @@
     <title>Figma API Test</title>
   </head>
   <body>
-    <article>
+    <article class="site-wrapper">
       <h1 class="site-title">Figma Style Guide Generator</h1>
+
+      <div class="input-file-key">
+        <label for="file-key">Input a Figma file key to this form.</label>
+        <p>The Figma file key is a string after "/file/" of the file URL.</p>
+        <input
+          type="text"
+          id="name"
+          name="file-key"
+          placeholder="gKK09ljJaGH9yR4J2mIGfQ3h"
+          required
+        />
+      </div>
+
       <section id="js-basic-infos">
         <h1>File Informations</h1>
       </section>
