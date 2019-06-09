@@ -19,9 +19,6 @@ body {
 
 h1 {
   font-size: 32px;
-  padding-bottom: 8px;
-  border-bottom: solid 1px rgba($black, 0.2);
-  color: $gray;
   margin-bottom: 0.8em;
 }
 
@@ -33,7 +30,6 @@ h2 {
 
 p {
   font-size: 14px;
-  margin-top: 0.2em;
   margin-bottom: 0.8em;
 }
 
@@ -57,14 +53,24 @@ img {
   margin-top: 0;
 }
 
+.first-step {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-auto-rows: minmax(160px, auto);
+  grid-row-gap: 32px;
+  grid-column-gap: 32px;
+}
+
 .input-file-key {
   display: block;
   width: 100%;
-  margin-bottom: 3.2em;
+  margin-bottom: 2.8em;
 
-  label {
+  h1 {
     font-size: 18px;
     font-weight: 600;
+    margin-bottom: 0;
   }
   p {
     font-size: 12px;
@@ -131,6 +137,37 @@ img {
     &:disabled {
       background-color: $gray;
     }
+  }
+}
+
+.check-data {
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .basic-infos {
+    background: $pale-gray;
+    padding: 16px;
+    display: flex;
+    align-items: start;
+
+    img {
+      width: 160px;
+      margin-right: 16px;
+    }
+    p {
+      &:nth-of-type(1) {
+        margin-bottom: 0.2em;
+      }
+    }
+  }
+}
+
+.select-button {
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
   }
 }
 

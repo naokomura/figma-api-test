@@ -10,35 +10,56 @@
     <article class="site-wrapper">
       <h1 class="site-title">Figma Style Guide Generator</h1>
 
-      <div class="input-file-key">
-        <label for="file-key">Input a Figma file key to this form.</label>
-        <p>The Figma file key is a string after "/file/" of the file URL.</p>
+      <section class="first-step">
+        <div class="input-file-key">
+          <h1>
+            <label for="file-key"
+              >1. Input a Figma file key to this form.</label
+            >
+          </h1>
+          <p>The Figma file key is a string after "/file/" of the file URL.</p>
 
-        <form name="get-file-key" id="get_file_key_form" action="">
-          <div class="input-file-key__input">
-            <input
-              id="file_key"
-              type="text"
-              name="file-key"
-              placeholder="gKK09ljJaGH9yR4J2mIGfQ3h"
-              size="45"
-              pattern="[A-Za-z0-9]{16,32}"
-              value=""
-              required
-            />
-            <span class="validity"></span>
-          </div>
-        </form>
-        <button class="input-file-key__button" id="js-set-file-key" disabled>
-          SET FILE KEY
-        </button>
-      </div>
+          <form name="get-file-key" id="get_file_key_form" action="">
+            <div class="input-file-key__input">
+              <input
+                id="file_key"
+                type="text"
+                name="file-key"
+                placeholder="gKK09ljJaGH9yR4J2mIGfQ3h"
+                size="45"
+                pattern="[A-Za-z0-9]{16,32}"
+                value=""
+                required
+              />
+              <span class="validity"></span>
+            </div>
+          </form>
+          <button class="input-file-key__button" id="js-set-file-key" disabled>
+            SET FILE KEY
+          </button>
+        </div>
 
-      <section id="js-basic-infos">
-        <h1>File Informations</h1>
+        <div class="check-data">
+          <h1>2. Check your Figma file Data.</h1>
+          <div id="js-basic-infos" class="basic-infos"></div>
+        </div>
       </section>
+
+      <section class="select-button">
+        <h1>3. Select style type to be generated.</h1>
+        <button class="input-file-key__button" id="" disabled>
+          GENERATE COLOR STYLES
+        </button>
+        <button class="input-file-key__button" id="" disabled>
+          GENERATE TEXT STYLES
+        </button>
+        <button class="input-file-key__button" id="" disabled>
+          GENERATE EFFECT STYLES
+        </button>
+      </section>
+
       <section id="js-color-styles">
-        <h1>Color Styles</h1>
+        <!-- <h1>Color Styles</h1> -->
       </section>
     </article>
 

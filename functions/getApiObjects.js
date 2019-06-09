@@ -1,6 +1,4 @@
 import TOKEN from '../token'
-import FILE_KEY from '../fileKey'
-
 import axios from 'axios'
 
 const request = axios.create({
@@ -19,10 +17,16 @@ function timeout(ms) {
 GET DATAS FROM FIGMA API
 ----------------------------------- */
 //GET Full json
-async function getFullJson() {
-  const reqJson = await request.get(`/v1/files/${FILE_KEY}`)
-  const reqData = reqJson.data
-  return reqData
+async function getFullJson(FILE_KEY) {
+  try {
+    const reqJson = await request.get(`/v1/files/${FILE_KEY}`)
+    const reqData = reqJson.data
+    return reqData
+  } catch (error) {
+    const { status, err } = error.response.data
+    const errorMsg = `HTTP Status: ${status} ${err}`
+    return errorMsg
+  }
 }
 
 //GET Style Node

@@ -61,29 +61,54 @@ function getStyleAccessKeys(reqObj) {
 GENERATE GETTING DATAS TO DOM
 ----------------------------------- */
 const basicInfoArea = document.getElementById('js-basic-infos')
-const colorStyleArea = document.getElementById('js-color-styles')
+import generateBasicInfo from './functions/generateBasicInfos'
 
+const colorStyleArea = document.getElementById('js-color-styles')
 import generateColorStyle from './functions/generateColorStyles'
 
-function generateBasicInfo(reqObj) {
-  console.log(reqObj)
+/* -----------------------------------
+GET FILE_KEY USER SET
+----------------------------------- */
+import getFileKey from './fileKey'
+const setFileKeyButton = document.getElementById('js-set-file-key')
+const fileKeyInput = document.forms.get_file_key_form.file_key
 
-  const fileTitle = document.createElement('h2')
-  fileTitle.appendChild(document.createTextNode(`File Name: ${reqObj.name}`))
-  const thumbnail = document.createElement('img')
-  thumbnail.src = reqObj.thumbnailUrl
+async function checkFileInfo(FILE_KEY) {
+  const fullData = await getFullJson(FILE_KEY)
+  const basicInfoAreaChild = basicInfoArea.firstElementChild
 
-  const map = new Map()
-  map.set('fileTitle', fileTitle)
-  map.set('thumbnail', thumbnail)
-
-  let generateDoms = document.createDocumentFragment()
-  for (const item of map.values()) {
-    generateDoms.appendChild(item)
+  //If basicInfoArea has child, delete myself.
+  if (basicInfoAreaChild) {
+    basicInfoAreaChild.parentNode.removeChild(basicInfoAreaChild)
   }
 
-  return generateDoms
+  if (typeof fullData === 'string') {
+    const alertMsg = document.createElement('p')
+    alertMsg.appendChild(
+      document.createTextNode(
+        `Error! Check if there is a mistake in the File Key >${fullData}`
+      )
+    )
+    basicInfoArea.appendChild(alertMsg)
+  } else {
+    const basicInfoNodes = generateBasicInfo(fullData)
+    basicInfoArea.appendChild(basicInfoNodes)
+  }
 }
+
+fileKeyInput.addEventListener('input', () => {
+  if (fileKeyInput.validity.valid) {
+    setFileKeyButton.disabled = false
+  } else {
+    setFileKeyButton.disabled = true
+  }
+})
+
+setFileKeyButton.addEventListener('click', () => {
+  const FILE_KEY = getFileKey(fileKeyInput)
+  //generate basic infos by gotten FILE_KEY
+  checkFileInfo(FILE_KEY)
+})
 
 /* -----------------------------------
 START ALL FUNCTION
@@ -121,20 +146,4 @@ async function start() {
   colorStyleArea.appendChild(colorStyleNodes)
 }
 
-import getFileKey from './fileKey'
-const setFileKeyButton = document.getElementById('js-set-file-key')
-const fileKeyInput = document.forms.get_file_key_form.file_key
-
-fileKeyInput.addEventListener('input', () => {
-  if (fileKeyInput.validity.valid) {
-    setFileKeyButton.disabled = false
-  } else {
-    setFileKeyButton.disabled = true
-  }
-})
-setFileKeyButton.addEventListener('click', () => {
-  const FILE_KEY = getFileKey(fileKeyInput)
-  console.log(FILE_KEY)
-})
-
-start()
+//start()
