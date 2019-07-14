@@ -6,7 +6,7 @@
   "author": "Nao Komura <nao.komura@sixaxd.com>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "parcel-bundler": "^1.12.3",
     "rgb-hex": "^3.0.0",
     "sass": "^1.20.1"
